@@ -58,7 +58,7 @@
                                     {% else %}
                                         {% set dateStart = user.date %}
                                         {% set dateEnd = dtNow %}
-                                        {% set aDays = ((dateEnd.diff(dateStart).format("%a")) - 6570)*-1 %}
+                                        {% set aDays = 6570 - (dateStart.diff(dateEnd).format("%a")) %}
                                         {% if (aDays / 365)|round(0, 'floor') == 0 %}
                                             {% set month = (aDays / 30)|round(0, 'floor') %}
                                             <td>Wait: {{ months }}m. for verify</td>

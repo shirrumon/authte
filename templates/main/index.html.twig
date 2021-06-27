@@ -8,11 +8,29 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<div class="example-wrapper">
+<br class="example-wrapper">
     {% if app.user != null %}
     <h1>You are logged as {{ app.user.email }}</h1>
     <hr>
     <a href="{{ logout_url(key = null) }}">Log-out</a>
+        <br></br>
+        {% for i in app.user.roles%}
+            {% if i != 'ROLE_ADMIN' %}
+                {% if app.user.isVerified == 1 %}
+                    <h6 class="alert alert-success col-3" style="text-align: center">Your account has been verified</h6>
+                    <h4>Data of your account</h4>
+                    <h5>Your email: </h5>{{ app.user.email }}<hr>
+                    <h5>Your name: </h5>{{ app.user.name }}<hr>
+                    <h5>Your surname: </h5>{{ app.user.surname }}<hr>
+                    <h5>Your date of birthday</h5>{{ app.user.date|date("Y-m-d") }}<hr>
+                    <h5>Your create profile date: </h5>{{ app.user.createDate|date("Y-m-d") }} <hr>
+                {% else %}
+                    <h6 class="alert alert-danger col-3" style="text-align: center">Your account is not verified. Please< contact with your admin</h6>
+                {% endif %}
+            {% else %}
+                <h4><a href="/user">TABEL OF USERS</a></h4>
+            {% endif %}
+        {% endfor %}
     {% else %}
     <h1>You can't see this page becouse you are is anonymous</h1>
     <hr>

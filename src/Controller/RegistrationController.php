@@ -62,6 +62,13 @@ class RegistrationController extends AbstractController
 
             $user->setMethod('UI');
             $user->setCreateDate(new DateTime("now"));
+
+            $data = strtolower($user->getLang());
+            $dataAr = explode(', ', $data);
+            $unik = array_unique($dataAr);
+            $st = implode(" ", $unik);
+            $user->setLang($st);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
