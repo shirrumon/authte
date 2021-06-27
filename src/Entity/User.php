@@ -70,6 +70,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $method;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -181,7 +186,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPesel(): ?bigint
+    public function getPesel(): ?string
     {
         return $this->pesel;
     }
@@ -223,6 +228,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
+        return $this;
+    }
+
+    public function getMethod(): ?string
+    {
+        $method = $this->method;
+        $method = 'UI';
+        return $method;
+
+    }
+
+    public function setMethod(string $method): self
+    {
+        $this->method = $method;
         return $this;
     }
 }

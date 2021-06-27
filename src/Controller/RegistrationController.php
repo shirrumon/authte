@@ -4,14 +4,27 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class RegistrationController extends AbstractController
 {
+    private $verifyEmailHelper;
+    private $mailer;
+
+    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer)
+    {
+        $this->verifyEmailHelper = $helper;
+        $this->mailer = $mailer;
+    }
+
     /**
      * @Route("/register", name="app_register")
      */
@@ -30,6 +43,24 @@ class RegistrationController extends AbstractController
                 )
             );
 
+
+
+            $date = $user->getDate();
+            $dateNow = new DateTime("now");
+            $difer = $date->diff($dateNow);
+            $difer = $difer->format("%a");
+            if ($difer >= 6570){
+                $email = new TemplatedEmail();
+                $email->from('nwchanel69@gmail.com');
+                $email->to($user->getEmail());
+                $email->htmlTemplate('registration/confirmation_email.html.twig');
+                $email->context(['Your account has been activated']);
+
+                $user->setIsVerified(true);
+                $this->mailer->send($email);
+            }
+
+            $user->setMethod('UI');
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
