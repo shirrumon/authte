@@ -1,0 +1,14 @@
+{% if app.user != null %}
+    {% for role in app.user.roles %}
+        {% if role != 'ROLE_ADMIN' %}
+            <h4>Access denied</h4>
+        {% else %}
+            <form method="post" action="{{ path('user_delete', {'id': user.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                <button class="btn">Delete</button>
+            </form>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <h4>Please,login for see this page</h4>
+{% endif %}

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block body %}
+    {% if app.user != null %}
+        {% for role in app.user.roles %}
+            {% if role != 'ROLE_ADMIN' %}
+                <h4>Access denied</h4>
+            {% else %}
+                <h1>Edit User</h1>
+
+                {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+
+                <a href="{{ path('user_index') }}">back to list</a>
+
+                {{ include('user/_delete_form.html.twig') }}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h4>Please,login for see this page</h4>
+    {% endif %}
+{% endblock %}

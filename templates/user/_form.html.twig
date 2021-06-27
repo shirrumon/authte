@@ -1,0 +1,18 @@
+ {% if app.user != null %}
+     {% for role in app.user.roles %}
+         {% if role != 'ROLE_ADMIN' %}
+             <h4>Access denied</h4>
+         {% else %}
+             {{ form_start(form) }}
+            <div class="form_group">
+             <div class="col-md-4 mb-3">
+             {{ form_widget(form, {'attr': {'class': 'form-control'}}) }}
+             </div>
+            </div>
+             <button class="btn">{{ button_label|default('Save') }}</button>
+             {{ form_end(form) }}
+         {% endif %}
+     {% endfor %}
+ {% else %}
+     <h4>Please,login for see this page</h4>
+ {% endif %}

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+    {% if app.user != null %}
+        {% for role in app.user.roles %}
+            {% if role != 'ROLE_ADMIN' %}
+                <h4>Access denied</h4>
+            {% else %}
+                <h1>User</h1>
+
+                <table class="table table-dark table-striped">
+                    <tbody>
+                    <tr table-dark>
+                        <th>Id</th>
+                        <td>{{ user.id }}</td>
+                    </tr>
+                    <tr table-dark>
+                        <th>Email</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr table-dark>
+                        <th>Roles</th>
+                        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                    </tr>
+                    <tr table-dark>
+                        <th>Password</th>
+                        <td>{{ user.password }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <a href="{{ path('user_index') }}">back to list</a>
+
+                <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+
+                {{ include('user/_delete_form.html.twig') }}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h4>Please,login for see this page</h4>
+    {% endif %}
+{% endblock %}
