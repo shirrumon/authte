@@ -21,20 +21,45 @@
                         <td>{{ user.email }}</td>
                     </tr>
                     <tr table-dark>
-                        <th>Roles</th>
-                        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                        <th>Name</th>
+                        <td>{{ user.name }}</td>
                     </tr>
                     <tr table-dark>
-                        <th>Password</th>
-                        <td>{{ user.password }}</td>
+                        <th>Surname</th>
+                        <td>{{ user.surname }}</td>
+                    </tr>
+                    <tr table-dark>
+                        <th>Pesel</th>
+                        <td>{{ user.pesel }}</td>
+                    </tr>
+                    <tr table-dark>
+                        <th>Programming language</th>
+                        <td>{{ user.lang }}</td>
+                    </tr>
+                    <tr table-dark>
+                        <th>Date of birthday</th>
+                        <td>{{ user.date|date('d-m-Y') }}</td>
+                    </tr>
+                    <tr table-dark>
+                        <th>Verified</th>
+                        {% if user.isVerified == 1 %}
+                        <td style="color:green">Verified</td>
+                        {% else %}
+                        <td style="color:red">Not verified</td>
+                        {% endif %}
+                    </tr>
+
+                    <tr table-dark>
+                        <th>Roles</th>
+                        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
                     </tr>
                     </tbody>
                 </table>
 
-                <a href="{{ path('user_index') }}">back to list</a>
+                <a class="btn btn-success" href="{{ path('user_index') }}">back to list</a>
 
-                <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
-
+                <a class="btn btn-warning" href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                <br></br>
                 {{ include('user/_delete_form.html.twig') }}
             {% endif %}
         {% endfor %}

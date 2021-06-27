@@ -3,14 +3,52 @@
          {% if role != 'ROLE_ADMIN' %}
              <h4>Access denied</h4>
          {% else %}
-             {{ form_start(form) }}
-            <div class="form_group">
-             <div class="col-md-4 mb-3">
-             {{ form_widget(form, {'attr': {'class': 'form-control'}}) }}
+             <div class="row justify-content-center">
+                 {{ form_start(form) }}
+                 <div class="col-md-4 mb-3 form_group justify-content-center">
+                         {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+                 </div>
+                 <div class="col-md-4 mb-3 form_group">
+                         {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+                 </div>
+                 <div class="form_group">
+                     <div class="col-md-4 mb-3">
+                         {{ form_row(form.surname, {'attr': {'class': 'form-control'}}) }}
+                     </div>
+                 </div>
+                 <div class="form_group">
+                     <div class="col-md-4 mb-3">
+                         {{ form_row(form.pesel, {'attr': {'class': 'form-control'}}) }}
+                     </div>
+                 </div>
+                 <div class="form_group">
+                     <div class="col-md-4 mb-3">
+                         {{ form_row(form.lang, {'attr': {'class': 'form-control'}}) }}
+                     </div>
+                 </div>
+                 <div class="form_group">
+                     <div class="col-md-4 mb-3">
+                         {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
+                     </div>
+                 </div>
+                 <div class="form_group">
+                     <div class="col-md-4 mb-3">
+                         {{ form_row(form.isVerified, {'attr': {'class': 'form-control, checkbox'}}) }}
+                     </div>
+                 </div>
+                 <div class="form_group">
+                     <div class="col-md-4 mb-3">
+                         {{ form_row(form.roles, {'attr': {'class': 'form-control'}}) }}
+                     </div>
+                 </div>
+                 <div class="form_group">
+                     <div class="col-md-4 mb-3">
+                         {{ form_row(form.password, {'attr': {'class': 'form-control'}}) }}
+                     </div>
+                 </div>
+                 <button class="btn btn-warning">{{ button_label|default('Save') }}</button>
+                 {{ form_end(form) }}
              </div>
-            </div>
-             <button class="btn">{{ button_label|default('Save') }}</button>
-             {{ form_end(form) }}
          {% endif %}
      {% endfor %}
  {% else %}

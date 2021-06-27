@@ -11,10 +11,10 @@
                 <h1>Edit User</h1>
 
                 {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
-
-                <a href="{{ path('user_index') }}">back to list</a>
-
+                <br></br>
                 {{ include('user/_delete_form.html.twig') }}
+                <hr>
+                <a class="btn btn-primary" href="{{ path('user_index') }}">back to list</a>
             {% endif %}
         {% endfor %}
     {% else %}

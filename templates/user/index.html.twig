@@ -16,29 +16,27 @@
                     <thead>
                     <tr class="table-dark">
                         <th>Email</th>
-                        <th>Name</th>
-                        <th>Surname</th>
-                        <th>PESEL</th>
-                        <th>Date</th>
-                        <th>Roles</th>
+                        <th>Age</th>
+                        <th>Verify</th>
                         <th>Create</th>
-                        <th>actions</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for user in users %}
                         <tr class="table-dark">
                             <td>{{ user.email }}</td>
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.surname }}</td>
-                            <td>{{ user.pesel }}</td>
                             <td>{{ user.date|date('d-m-Y') }}</td>
-                            <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                            {% if user.isVerified == 1 %}
+                                <td style="color:green">Verified</td>
+                            {% else %}
+                                <td style="color:red">Not verified</td>
+                            {% endif %}
                             <td>{{ user.method }}</td>
                             <td>
-                                <a href="{{ path('user_show', {'id': user.id}, relative = false) }}">show</a>
-
-                                <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                                <a style="color:white" href="{{ path('user_show', {'id': user.id}, relative = false) }}">show</a>
+                                    /
+                                <a style="color:white" href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
                             </td>
                         </tr>
                     {% else %}
