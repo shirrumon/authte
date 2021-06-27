@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Validator\Constraints\Date;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -35,7 +36,44 @@ class UserController extends AbstractController
      */
     public function index(UserRepository $userRepository): Response
     {
+        $date = date('Y-m-d h:i:s', strtotime("-30 days"));
+
+        $usersThree = $userRepository
+            ->createQueryBuilder('e')
+            ->select('e')
+            ->setParameter('today', date("Y-m-d"))
+            ->setParameter('days', $date)
+            ->where('e.createDate BETWEEN :days AND :today')
+            ->getQuery()
+            ->getArrayResult();
+
+        $dateTw = date('Y-m-d h:i:s', strtotime("-3 days"));
+
+        $usersTh = $userRepository
+            ->createQueryBuilder('e')
+            ->select('e')
+            ->setParameter('today', date("Y-m-d"))
+            ->setParameter('n3days', $dateTw)
+            ->where('e.createDate BETWEEN :n3days AND :today')
+            ->getQuery()
+            ->getArrayResult();
+
+        $dateSv = date('Y-m-d h:i:s', strtotime("-7 days"));
+
+        $usersSv = $userRepository
+            ->createQueryBuilder('e')
+            ->select('e')
+            ->where('e.createDate BETWEEN :n7days AND :today')
+            ->setParameter('today', date("Y-m-d"))
+            ->setParameter('n7days', $dateSv)
+            ->getQuery()
+            ->getArrayResult();
+
         return $this->render('user/index.html.twig', [
+            'usersThree' => $usersThree,
+            'usersTh' => $usersTh,
+            'usersSv' => $usersSv,
+            'dtNow' => new DateTime("now"),
             'users' => $userRepository->findAll(),
         ]);
     }
@@ -71,6 +109,7 @@ class UserController extends AbstractController
                 )
             );
             $user->setMethod('UI');
+            $user->setCreateDate(new DateTime("now"));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();

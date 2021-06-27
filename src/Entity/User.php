@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Cassandra\Bigint;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -61,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $lang;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $date;
 
@@ -74,6 +75,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255)
      */
     private $method;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createDate;
 
     public function getId(): ?int
     {
@@ -242,6 +248,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setMethod(string $method): self
     {
         $this->method = $method;
+        return $this;
+    }
+
+    public function getCreateDate(): ?DateTimeInterface
+    {
+        return $this->createDate;
+    }
+
+    public function setCreateDate(DateTimeInterface $createDate): self
+    {
+        $this->createDate = $createDate;
         return $this;
     }
 }

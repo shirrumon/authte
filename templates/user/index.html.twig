@@ -8,44 +8,207 @@
             {% if role != 'ROLE_ADMIN' %}
                 <h4>Access denied</h4>
             {% else %}
-                <h1>User index</h1>
-                <hr>
-                <a href="{{ path('user_new') }}" class="btn btn-primary">Create new</a>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="home" aria-selected="true">All users</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#thdays" type="button" role="tab" aria-controls="profile" aria-selected="false">3-day</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#sevdays" type="button" role="tab" aria-controls="contact" aria-selected="false">7-day</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#threedays" type="button" role="tab" aria-controls="contact" aria-selected="false">30-day</button>
+                    </li>
+                </ul>
                 <br></br>
-                <table class="table table-dark table-striped">
-                    <thead>
-                    <tr class="table-dark">
-                        <th>Email</th>
-                        <th>Age</th>
-                        <th>Verify</th>
-                        <th>Create</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for user in users %}
-                        <tr class="table-dark">
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.date|date('d-m-Y') }}</td>
-                            {% if user.isVerified == 1 %}
-                                <td style="color:green">Verified</td>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="home-tab">
+                        <h1>Users from all time</h1>
+                        <hr>
+                        <a href="{{ path('user_new') }}" class="btn btn-primary">Create new</a>
+                        <br></br>
+                        <table class="table table-dark table-striped">
+                            <thead>
+                            <tr class="table-dark">
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Verify</th>
+                                <th>Create</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in users %}
+                                <tr class="table-dark">
+                                    <td>{{ user.email }}</td>
+                                    {% if user.isVerified == 1%}
+                                        {% set dateStart = user.date %}
+                                        {% set dateEnd = dtNow %}
+                                        {% set aDays = dateEnd.diff(dateStart).format("%a") %}
+                                        {% if (aDays / 365)|round(0, 'floor') == 0 %}
+                                            {% set month = (aDays / 30)|round(0, 'floor') %}
+                                            <td>Months: {{ months }}</td>
+                                        {% else %}
+                                            {% set years = (aDays / 365)|round(0, 'floor') %}
+                                            {% set months = ((aDays - (years*365))/30)|round(0, 'floor') %}
+                                            <td>Years: {{ years }}, Months: {{ months }}</td>
+                                        {% endif%}
+                                    {% else %}
+                                        {% set dateStart = user.date %}
+                                        {% set dateEnd = dtNow %}
+                                        {% set aDays = ((dateEnd.diff(dateStart).format("%a")) - 6570)*-1 %}
+                                        {% if (aDays / 365)|round(0, 'floor') == 0 %}
+                                            {% set month = (aDays / 30)|round(0, 'floor') %}
+                                            <td>Wait: {{ months }}m. for verify</td>
+                                        {% else %}
+                                            {% set years = (aDays / 365)|round(0, 'floor') %}
+                                            {% set months = ((aDays - (years*365))/30)|round(0, 'floor') %}
+                                            <td>Wait: {{ years }}y. {{ months }}m. for verify</td>
+                                        {% endif%}
+                                    {% endif%}
+                                    {% if user.isVerified == 1 %}
+                                        <td style="color:green">Verified</td>
+                                    {% else %}
+                                        <td style="color:red">Not verified</td>
+                                    {% endif %}
+                                    <td>{{ user.method }}</td>
+                                    <td>
+                                        <a style="color:white" href="{{ path('user_show', {'id': user.id}, relative = false) }}">show</a>
+                                        /
+                                        <a style="color:white" href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                                    </td>
+                                </tr>
                             {% else %}
-                                <td style="color:red">Not verified</td>
-                            {% endif %}
-                            <td>{{ user.method }}</td>
-                            <td>
-                                <a style="color:white" href="{{ path('user_show', {'id': user.id}, relative = false) }}">show</a>
-                                    /
-                                <a style="color:white" href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="5">no records found</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                                <tr>
+                                    <td colspan="5">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="thdays" role="tabpanel" aria-labelledby="profile-tab">
+                        <h1>Users from last 3 days</h1>
+                        <hr>
+                        <a href="{{ path('user_new') }}" class="btn btn-primary">Create new</a>
+                        <br></br>
+                        <table class="table table-dark table-striped">
+                            <thead>
+                            <tr class="table-dark">
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Verify</th>
+                                <th>Create</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in usersTh %}
+                                <tr class="table-dark">
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.date|date('d-m-Y') }}</td>
+                                    {% if user.isVerified == 1 %}
+                                        <td style="color:green">Verified</td>
+                                    {% else %}
+                                        <td style="color:red">Not verified</td>
+                                    {% endif %}
+                                    <td>{{ user.method }}</td>
+                                    <td>
+                                        <a style="color:white" href="{{ path('user_show', {'id': user.id}, relative = false) }}">show</a>
+                                        /
+                                        <a style="color:white" href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="sevdays" role="tabpanel" aria-labelledby="contact-tab">
+                        <h1>Users from last 7 days</h1>
+                        <hr>
+                        <a href="{{ path('user_new') }}" class="btn btn-primary">Create new</a>
+                        <br></br>
+                        <table class="table table-dark table-striped">
+                            <thead>
+                            <tr class="table-dark">
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Verify</th>
+                                <th>Create</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in usersSv %}
+                                <tr class="table-dark">
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.date|date('d-m-Y') }}</td>
+                                    {% if user.isVerified == 1 %}
+                                        <td style="color:green">Verified</td>
+                                    {% else %}
+                                        <td style="color:red">Not verified</td>
+                                    {% endif %}
+                                    <td>{{ user.method }}</td>
+                                    <td>
+                                        <a style="color:white" href="{{ path('user_show', {'id': user.id}, relative = false) }}">show</a>
+                                        /
+                                        <a style="color:white" href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="threedays" role="tabpanel" aria-labelledby="contact-tab">
+                        <h1>Users from last 30 days</h1>
+                        <hr>
+                        <a href="{{ path('user_new') }}" class="btn btn-primary">Create new</a>
+                        <br></br>
+                        <table class="table table-dark table-striped">
+                            <thead>
+                            <tr class="table-dark">
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Verify</th>
+                                <th>Create</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in usersThree %}
+                                <tr class="table-dark">
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.date|date('d-m-Y') }}</td>
+                                    {% if user.isVerified == 1 %}
+                                        <td style="color:green">Verified</td>
+                                    {% else %}
+                                        <td style="color:red">Not verified</td>
+                                    {% endif %}
+                                    <td>{{ user.method }}</td>
+                                    <td>
+                                        <a style="color:white" href="{{ path('user_show', {'id': user.id}, relative = false) }}">show</a>
+                                        /
+                                        <a style="color:white" href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             {% endif %}
         {% endfor %}
     {% else %}

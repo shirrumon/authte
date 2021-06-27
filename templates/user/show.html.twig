@@ -41,6 +41,10 @@
                         <td>{{ user.date|date('d-m-Y') }}</td>
                     </tr>
                     <tr table-dark>
+                        <th>Account create date</th>
+                        <td>{{ user.createDate|date('d-m-Y') }}</td>
+                    </tr>
+                    <tr table-dark>
                         <th>Verified</th>
                         {% if user.isVerified == 1 %}
                         <td style="color:green">Verified</td>
