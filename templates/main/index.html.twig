@@ -25,7 +25,7 @@
                     <h5>Your date of birthday</h5>{{ app.user.date|date("Y-m-d") }}<hr>
                     <h5>Your create profile date: </h5>{{ app.user.createDate|date("Y-m-d") }} <hr>
                 {% else %}
-                    <h6 class="alert alert-danger col-3" style="text-align: center">Your account is not verified. Please< contact with your admin</h6>
+                    <h6 class="alert alert-danger col-3" style="text-align: center">Your account is not verified. Please contact with your admin</h6>
                 {% endif %}
             {% else %}
                 <h4><a href="/user">TABEL OF USERS</a></h4>

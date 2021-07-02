@@ -123,7 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        // $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -239,10 +239,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getMethod(): ?string
     {
-        $method = $this->method;
-        $method = 'UI';
-        return $method;
-
+        return $this->method;
     }
 
     public function setMethod(string $method): self

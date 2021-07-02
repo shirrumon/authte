@@ -10,11 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Validator\Constraints\Date;
-use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Service\UserSetUp;
 
 /**
  * @Route("/user")
@@ -22,57 +19,16 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractController
 {
 
-    private $verifyEmailHelper;
-    private $mailer;
-
-    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer)
-    {
-        $this->verifyEmailHelper = $helper;
-        $this->mailer = $mailer;
-    }
-
     /**
      * @Route("/", name="user_index", methods={"GET"})
      */
-    public function index(UserRepository $userRepository): Response
+    public function index(UserRepository $userRepository, UserSetUp $filter): Response
     {
-        $date = date('Y-m-d h:i:s', strtotime("-30 days"));
-
-        $usersThree = $userRepository
-            ->createQueryBuilder('e')
-            ->select('e')
-            ->setParameter('today', date("Y-m-d"))
-            ->setParameter('days', $date)
-            ->where('e.createDate BETWEEN :days AND :today')
-            ->getQuery()
-            ->getArrayResult();
-
-        $dateTw = date('Y-m-d h:i:s', strtotime("-3 days"));
-
-        $usersTh = $userRepository
-            ->createQueryBuilder('e')
-            ->select('e')
-            ->setParameter('today', date("Y-m-d"))
-            ->setParameter('n3days', $dateTw)
-            ->where('e.createDate BETWEEN :n3days AND :today')
-            ->getQuery()
-            ->getArrayResult();
-
-        $dateSv = date('Y-m-d h:i:s', strtotime("-7 days"));
-
-        $usersSv = $userRepository
-            ->createQueryBuilder('e')
-            ->select('e')
-            ->where('e.createDate BETWEEN :n7days AND :today')
-            ->setParameter('today', date("Y-m-d"))
-            ->setParameter('n7days', $dateSv)
-            ->getQuery()
-            ->getArrayResult();
-
+        $filter->Filter($userRepository);
         return $this->render('user/index.html.twig', [
-            'usersThree' => $usersThree,
-            'usersTh' => $usersTh,
-            'usersSv' => $usersSv,
+            'usersThree' => $filter->usersThree,
+            'usersTh' => $filter->usersTh,
+            'usersSv' => $filter->usersSv,
             'dtNow' => new DateTime("now"),
             'users' => $userRepository->findAll(),
         ]);
@@ -81,35 +37,20 @@ class UserController extends AbstractController
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      */
-    public function new(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function new(Request $request, UserPasswordEncoderInterface $passwordEncoder, UserSetUp $userReady): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $date = $user->getDate();
-            $dateNow = new DateTime("now");
-            $difer = $date->diff($dateNow);
-            $difer = $difer->format("%a");
-            if ($difer >= 6570){
-                $email = new TemplatedEmail();
-                $email->from('nwchanel69@gmail.com');
-                $email->to($user->getEmail());
-                $email->htmlTemplate('registration/confirmation_email.html.twig');
-                $email->context(['Your account has been activated']);
-
-                $user->setIsVerified(true);
-                $this->mailer->send($email);
-            }
+            $userReady->UsrSet($user);
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
                     $form->get('password')->getData()
                 )
             );
-            $user->setMethod('UI');
-            $user->setCreateDate(new DateTime("now"));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -138,22 +79,13 @@ class UserController extends AbstractController
      * @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
      */
 
-    public function edit(Request $request, User $user, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function edit(Request $request, User $user, UserPasswordEncoderInterface $passwordEncoder, UserSetUp $confirm): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($user->isVerified() == true){
-                $email = new TemplatedEmail();
-                $email->from('nwchanel69@gmail.com');
-                $email->to($user->getEmail());
-                $email->htmlTemplate('registration/confirmation_email.html.twig');
-                $email->context(['Your account has been activated']);
-
-                $this->mailer->send($email);
-            }
-
+            $confirm->UserConfirm($user);
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,

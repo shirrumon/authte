@@ -2,8 +2,6 @@ security:
     encoders:
         App\Entity\User:
             algorithm: auto
-        App\Entity\Admin2:
-            algorithm: auto
 
 
 
@@ -16,13 +14,9 @@ security:
                 entity:
                     class: App\Entity\User
                     property: email
-            admin:
-                entity:
-                    class: App\Entity\Admin2
-                    property: email
             all:
                 chain:
-                    providers: ['user', 'admin']
+                    providers: ['user']
 
 
         # used to reload user from session & other features (e.g. switch_user)
