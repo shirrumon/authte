@@ -24,11 +24,43 @@ class UserController extends AbstractController
      */
     public function index(UserRepository $userRepository, UserSetUp $filter): Response
     {
-        $filter->Filter($userRepository);
         return $this->render('user/index.html.twig', [
-            'usersThree' => $filter->usersThree,
-            'usersTh' => $filter->usersTh,
-            'usersSv' => $filter->usersSv,
+            'dtNow' => new DateTime("now"),
+            'users' => $userRepository->findAll(),
+        ]);
+    }
+
+    /**
+     * @Route("/index3", name="user_index3", methods={"GET"})
+     */
+    public function index3(UserRepository $userRepository, UserSetUp $filter)
+    {
+        return $this->render('user/index3.html.twig', [
+            'usersTh' => $filter->Filter3($userRepository),
+            'dtNow' => new DateTime("now"),
+            'users' => $userRepository->findAll(),
+        ]);
+    }
+
+    /**
+     * @Route("/index7", name="user_index7", methods={"GET"})
+     */
+    public function index7(UserRepository $userRepository, UserSetUp $filter)
+    {
+        return $this->render('user/index7.html.twig', [
+            'usersSv' => $filter->Filter3($userRepository),
+            'dtNow' => new DateTime("now"),
+            'users' => $userRepository->findAll(),
+        ]);
+    }
+
+    /**
+     * @Route("/index30", name="user_index30", methods={"GET"})
+     */
+    public function index30(UserRepository $userRepository, UserSetUp $filter)
+    {
+        return $this->render('user/index30.html.twig', [
+            'usersThree' => $filter->Filter30($userRepository),
             'dtNow' => new DateTime("now"),
             'users' => $userRepository->findAll(),
         ]);

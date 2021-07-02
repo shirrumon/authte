@@ -53,7 +53,37 @@ class UserSetUp
         $user->setRoles((array)'ROLE_USER');
     }
 
-    public function Filter($userRepository) // DATE FILTER FOR USERS REGISTER
+    public function Filter3($userRepository) // FILTER DATE OF USERS FOR 3 DAYS
+    {
+        $dateTw = date('Y-m-d h:i:s', strtotime("-3 days"));
+
+        $usersTh = $userRepository
+            ->createQueryBuilder('e')
+            ->select('e')
+            ->setParameter('today', date("Y-m-d"))
+            ->setParameter('n3days', $dateTw)
+            ->where('e.createDate BETWEEN :n3days AND :today')
+            ->getQuery()
+            ->getArrayResult();
+        return $usersTh;
+    }
+
+    public function Filter7($userRepository) // FILTER DATE OF USERS FOR 7 DAYS
+    {
+        $dateSv = date('Y-m-d h:i:s', strtotime("-7 days"));
+
+        $usersSv = $userRepository
+            ->createQueryBuilder('e')
+            ->select('e')
+            ->where('e.createDate BETWEEN :n7days AND :today')
+            ->setParameter('today', date("Y-m-d"))
+            ->setParameter('n7days', $dateSv)
+            ->getQuery()
+            ->getArrayResult();
+        return $usersSv;
+    }
+
+    public function Filter30($userRepository) // FILTER DATE OF USERS FOR 30 DAYS
     {
         $date = date('Y-m-d h:i:s', strtotime("-30 days"));
 
@@ -65,29 +95,9 @@ class UserSetUp
             ->where('e.createDate BETWEEN :days AND :today')
             ->getQuery()
             ->getArrayResult();
-
-        $dateTw = date('Y-m-d h:i:s', strtotime("-3 days"));
-
-        $usersTh = $userRepository
-            ->createQueryBuilder('e')
-            ->select('e')
-            ->setParameter('today', date("Y-m-d"))
-            ->setParameter('n3days', $dateTw)
-            ->where('e.createDate BETWEEN :n3days AND :today')
-            ->getQuery()
-            ->getArrayResult();
-
-        $dateSv = date('Y-m-d h:i:s', strtotime("-7 days"));
-
-        $usersSv = $userRepository
-            ->createQueryBuilder('e')
-            ->select('e')
-            ->where('e.createDate BETWEEN :n7days AND :today')
-            ->setParameter('today', date("Y-m-d"))
-            ->setParameter('n7days', $dateSv)
-            ->getQuery()
-            ->getArrayResult();
+        return $usersThree;
     }
+
 
     public function UserConfirm($user) //CONFIRM YOUR USER FOR ADMIN PANEL
     {
