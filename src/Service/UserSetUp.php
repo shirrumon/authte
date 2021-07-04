@@ -6,6 +6,7 @@ namespace App\Service;
 use DateTime;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 
@@ -18,11 +19,15 @@ class UserSetUp
     public $usersThree;
     public $usersSv;
 
-    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer)
+    private $passwordEncoder;
+
+    public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer, UserPasswordHasherInterface $passwordEncoder)
     {
         $this->verifyEmailHelper = $helper;
         $this->mailer = $mailer;
+        $this->passwordEncoder = $passwordEncoder;
     }
+
 
     public function UsrSet($user) // SET UP FUNCTION FOR USERS
     {
@@ -110,6 +115,24 @@ class UserSetUp
 
             $this->mailer->send($email);
         }
+    }
+
+    public function AdminSet($user)
+    {
+        $user->setName('admin');
+        $user->setSurname('admin');
+        $user->setPesel(1212121212);
+        $user->setLang('php');
+        $user->setDate(new \DateTime('1999-01-01'));
+        $user->setCreateDate(new DateTime('now'));
+        $user->setIsVerified(true);
+        $user->setMethod('CLI');
+
+        $user->setEmail('admin2@gmail.com');
+
+        $user->setRoles((array)'ROLE_ADMIN');
+        $password =  $this->passwordEncoder->hashPassword($user, 'coolrx666');
+        $user->setPassword($password);
     }
 
 }
