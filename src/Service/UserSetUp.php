@@ -111,4 +111,5 @@ class UserSetUp
             $this->mailer->send($email);
         }
     }
+
 }

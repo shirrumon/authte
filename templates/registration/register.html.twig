@@ -12,27 +12,47 @@
     {{ form_start(registrationForm) }}
 <div class="row form_group">
     <div class="col-md-4 mb-3">
-        {{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'example@gmail.com'}}) }}
     </div>
 </div>
 <div class="form_group">
     <div class="col-md-4 mb-3">
-        {{ form_row(registrationForm.name, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(registrationForm.name, {'attr': {'class': 'form-control', 'placeholder': 'John'}}) }}
     </div>
 </div>
 <div class="form_group">
     <div class="col-md-4 mb-3">
-        {{ form_row(registrationForm.surname, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(registrationForm.surname, {'attr': {'class': 'form-control', 'placeholder': 'Wick'}}) }}
     </div>
 </div>
 <div class="form_group">
     <div class="col-md-4 mb-3">
-        {{ form_row(registrationForm.pesel, {'attr': {'class': 'form-control', 'type': 'number'}}) }}
+        {{ form_row(registrationForm.pesel, {'attr': {'class': 'form-control', 'type': 'number', "oninput": "this.value=this.value.replace(/(?![0-9])./gmi,'')", 'minlength': '11', 'maxlength': '11', 'placeholder': '01312510257'}}) }}
     </div>
 </div>
 <div class="form_group">
     <div class="col-md-4 mb-3">
-        {{ form_row(registrationForm.lang, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(registrationForm.lang, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
+        <br>
+        {% for lang in langs %}
+            <div style="display: inline-block; padding: 4px; border-radius: 10%; border-style: solid; border-width: 1px; margin: 2px;">
+                <label>{{ lang.languages }}</label>
+                <input type="checkbox" value="{{ lang.languages }}" />
+            </div>
+        {% endfor %}
+        <script async>
+            let inputs = Array.prototype.slice.call(document.querySelectorAll('[type="checkbox"]'));
+            inp = document.querySelector("#registration_form_lang");
+            inputs.forEach(function (c) {
+                c.onclick = function () {
+                    var a = [];
+                    inputs.forEach(function (b) {
+                        b.checked && a.push(b.value)
+                    });
+                    inp.value = a
+                }
+            });
+        </script>
     </div>
 </div>
     <div class="form_group">
@@ -42,7 +62,7 @@
     </div>
 <div class="form_group">
     <div class="col-md-4 mb-3">
-        {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': '*********'}}) }}
     </div>
 </div>
 

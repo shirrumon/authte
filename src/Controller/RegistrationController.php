@@ -14,6 +14,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use App\Service\UserSetUp;
+use App\Repository\LanguagesRepository;
 
 class RegistrationController extends AbstractController
 {
@@ -21,7 +22,7 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder,UserSetUp $usr): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder,UserSetUp $usr, LanguagesRepository $repository): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -47,6 +48,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+            'langs' => $repository->findAll(),
         ]);
     }
 }
